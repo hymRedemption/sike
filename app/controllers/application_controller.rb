@@ -45,6 +45,8 @@ class ApplicationController < ActionController::Base
         msg: msg,
         errors: errors
       }, status: :bad_request
+    else
+      render text: msg
     end
   end
 
@@ -57,7 +59,7 @@ class ApplicationController < ActionController::Base
   end
 
   def trailing_slash?
-    request.env['REQUEST_URI'].match(/[^\?]+/).to_s.last == '/'
+    request.original_fullpath.match(/[^\?]+/).to_s.last == '/'
   end
 
 end
