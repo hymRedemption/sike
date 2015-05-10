@@ -1,0 +1,37 @@
+language: ruby
+cache: bundler
+rvm:
+  - 2.2.0
+bundler_args: "--without production"
+addons:
+  postgresql: '9.3'
+before_script:
+  - npm install -g bower
+  - npm install -g marked
+  - npm install -g xmd
+  - bower install
+  - psql -c 'create database travis_ci_test;' -U postgres
+  - rake parallel:create
+  - rake db:migrate
+  - rake parallel:prepare
+  - rake parallel:seed
+script:
+  - xvfb-run -a rake parallel:spec
+before_install:
+  #  http://docs.travis-ci.com/user/encrypting-files/
+  # Need Travis CI Command Line Client installed (gem install travis)
+  # 1、 create an archive of needed files(config/application.yml  courses_build/)
+  # 2、 encrypt the tar file
+  # for example:
+  # =================================================
+  #   $ tar cvf secrets.tar config/application.yml
+  #   $ travis encrypt-file secrets.tar --add
+  # =================================================
+  #   add the result file (secrets.tar.enc  .travis.yml) to git
+  #
+  # add (tar xvf secrets.tar) to .travis file
+  # ============================================
+  # before_install:
+  #   - openssl aes-256-cbc -K $encrypted_5880cf525281_key -iv $encrypted_5880cf525281_iv -in secrets.tar.enc -out secrets.tar -d # => this line is created by  '$ travis encrypt-file secrets.tar --add'
+  #   - tar xvf secrets.tar
+  # ============================================

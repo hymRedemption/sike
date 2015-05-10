@@ -11,7 +11,7 @@ gem 'redcarpet'
 gem 'sidekiq'
 gem 'sinatra', :require => nil
 
-gem 'rest-client', :require => "restclient"
+gem 'rest-client'
 
 gem 'font-awesome-rails'
 
@@ -84,13 +84,17 @@ end
 group :test do
   # Using Rspec tot test
   # explicit require to help zeus to load rspec. See: https://github.com/burke/zeus/issues/474#issuecomment-89336625
-  gem "rspec-rails", require: "rspec/rails" # including this in environments other than test seems to break things.
+  gem "rspec-rails"
 
   gem "capybara"
   gem "capybara-webkit"
 
+  #Speedup Test::Unit + RSpec + Cucumber + Spinach by running parallel on multiple CPU cores.
+  gem "parallel_tests"
+
   gem 'rack_session_access'
 
+  gem 'rake'
 
   # set data to database
   gem 'factory_girl_rails'

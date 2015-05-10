@@ -10,7 +10,7 @@ feature "enrollment flow" do
   given(:user) { FactoryGirl.create(:user)}
   given(:enrollment) { FactoryGirl.create(:enrollment, course: course.id, user: user.id) }
 
-  feature "enroll stage: " do
+  feature "enroll: " do
     background do
       visit enroll_page
     end
@@ -23,7 +23,7 @@ feature "enrollment flow" do
       end
     end
 
-    feature "invalid operation" do
+    feature "invalid operation: " do
       scenario 'Apply without fill name' do
         find_field("email").set(user_info["email"])
         find_button("申请加入").click
@@ -45,7 +45,7 @@ feature "enrollment flow" do
     end
   end
 
-  feature "invite" do
+  feature "invite: " do
     given(:auth_success) do
       OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new({
         "provider" => 'github',
@@ -75,7 +75,7 @@ feature "enrollment flow" do
     given(:personal_info) { {"blog_url" => "blog.com", "occupation" => "无业" } }
 
 
-    feature "valid page operation" do
+    feature "valid page operation: " do
 
       scenario 'Bind github successful' do
         auth_success
@@ -95,7 +95,7 @@ feature "enrollment flow" do
 
     end
 
-    feature "invalid page operation" do
+    feature "invalid page operation: " do
 
       scenario 'Intend to go to pay page without filling personal info' do
         visit invite_enrollment_path(enrollment)
@@ -122,10 +122,11 @@ feature "enrollment flow" do
 
   end
 
-  feature "pay", js: true do
+  feature "pay: ", js: true do
     given(:personal_info) { {"blog_url" => "blog.com", "occupation" => "无业" } }
 
     scenario 'User whose enrollment has already activate intend to visit pay page' do
+      FactoryGirl.create(:authentication, user: user.id)
       enrollment.update(activated: true)
       page.set_rack_session(user_id: user.id)
       visit pay_enrollment_path(enrollment)
